@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medicaid Enrollment Trends – Documentation</title>
+  <style>
+    :root {
+      --blue: #1f4f8f;
+      --accent: #ff7f0e;
+      --muted: #666666;
+      --bg: #f4f4f7;
+      --card-bg: #ffffff;
+      --border: #dddddd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #222;
+      line-height: 1.55;
+    }
+
+    .page-wrap {
+      max-width: 960px;
+      margin: 0 auto 40px;
+      padding: 20px;
+    }
+
+    header {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: var(--blue);
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: 0.94rem;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--blue);
+      text-decoration: none;
+      margin-left: 14px;
+    }
+
+    .nav-links a:first-child { margin-left: 0; }
+
+    .nav-links a:hover { text-decoration: underline; }
+
+    main {
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 22px 26px 26px;
+    }
+
+    h2 {
+      margin-top: 1.4em;
+      margin-bottom: 0.5em;
+      font-size: 1.3rem;
+      color: var(--blue);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+
+    h3 {
+      margin-top: 1.1em;
+      margin-bottom: 0.3em;
+      font-size: 1.05rem;
+      color: #333;
+    }
+
+    h4 {
+      margin-top: 0.9em;
+      margin-bottom: 0.25em;
+      font-size: 0.98rem;
+      color: #333;
+    }
+
+    p {
+      margin-top: 0.3em;
+      margin-bottom: 0.6em;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      margin-top: 0.25em;
+      margin-bottom: 0.6em;
+      padding-left: 1.3em;
+      font-size: 0.95rem;
+    }
+
+    li + li { margin-top: 0.12em; }
+
+    .section-divider {
+      border: none;
+      border-top: 1px dashed var(--border);
+      margin: 1.4em 0;
+    }
+
+    .image-placeholder {
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      background: #fafafa;
+      margin: 0.6em 0 1em;
+      text-align: center;
+    }
+
+    /* Keep images inside the frame */
+    .image-placeholder img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Video section styling */
+    .video-section {
+      margin-top: 1.6em;
+    }
+
+    .video-wrapper {
+      margin-top: 0.6em;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .video-wrapper iframe {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: 420px;
+      border: none;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .nav-links {
+        margin-top: 8px;
+      }
+      .nav-links a {
+        margin-left: 0;
+        margin-right: 12px;
+      }
+      .video-wrapper iframe {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <header>
+      <div>
+        <h1>Medicaid Enrollment Trends (2014–2021)</h1>
+        <p>Documentation for the interactive D3 visualization.</p>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">↩ Back to visualization</a>
+      </nav>
+    </header>
+
+    <main>
+
+      
+      <h2>DESIGN PROCESS</h2>
+
+      <p>The dataset includes:</p>
+      <ul>
+        <li>Total Medicaid enrollees</li>
+        <li>VIII group enrollees</li>
+        <li>Newly eligible VIII enrollees</li>
+        <li>State</li>
+        <li>Year and month</li>
+      </ul>
+
+      <p>The data is time-series, so I decided that a line chart would be the most effective way to show change over time.</p>
+
+      <h3>Initial designs and ideas</h3>
+
+      <h4>Static multi-line chart:</h4>
+      <p>A simple static line chart shows all three enrollment metrics over time. However, the scale difference makes the smaller lines almost flat.</p>
+
+      <h4>Separate mini charts:</h4>
+      <p>Splitting the metrics into separate line charts, but this would make comparison between metrics harder and increase cognitive load.</p>
+
+      <h4>Zoomable line chart:</h4>
+      <p>Zooming for detail, but the zoom changed only the x-axis, not the y-axis, which still kept the smaller lines almost flat.</p>
+
+      <h4>Focus on and legend interaction:</h4>
+      <p>Clicking a legend item focuses on that line. The chart then:</p>
+      <ul>
+        <li>Rescales the y-axis using only the focused line</li>
+        <li>Dims other lines</li>
+        <li>Allows zooming and panning</li>
+      </ul>
+      <p>This solves the scale imbalance and still has the ability to compare trends.</p>
+
+      <h3>Design sketches</h3>
+      <ul>
+        <li>A main chart</li>
+        <li>A layout with controls</li>
+        <li>A mode selector</li>
+        <li>Legends acting as interactive filters and focus toggles</li>
+        <li>Zoom and pan instructions</li>
+      </ul>
+
+      <div class="image-placeholder">
+        <img src="images/main.jpeg" alt="Main visualization layout screenshot">
+      </div>
+      
+      <hr class="section-divider" />
+
+      
+      <h2>RATIONALE OF DESIGN CHOICES</h2>
+
+      <h3>Why a line chart</h3>
+      <p>A line chart is ideal for showing trends and comparing multiple quantitative variables over time. Lines communicate trend patterns better than bars or scatterplots.</p>
+
+      <h3>Why use color for each metric</h3>
+      <p>Color encoding allows three independent variables to coexist in a single visual space.</p>
+      <ul>
+        <li>Blue for Total Medicaid Enrollees: primary, dominant line, visually strong and conventional for totals.</li>
+        <li>Orange for VIII Group Enrollees: contrast blue well, secondary variable.</li>
+        <li>Green for Newly Eligible VIII Enrollees: a third contrasting color, visually distinguishable from the others.</li>
+      </ul>
+
+      <h3>Why Enrollment Counts and Expansion Share modes</h3>
+      <p>Enrollment counts show scale, but expansion share answers a different question: How large is the expansion population relative to total Medicaid enrollment?</p>
+
+      <h3>Why interactive zoom and pan</h3>
+      <p>Zooming enables:</p>
+      <ul>
+        <li>Short-term anomalies</li>
+        <li>Policy event impacts</li>
+        <li>Local behavior that would be lost in a long chart</li>
+      </ul>
+      <p>Panning allows users to follow trends more easily across years.</p>
+
+      <h3>Why click the legend to focus</h3>
+      <p>Because Total Medicaid is much larger, the other lines look flat. Clicking the legend to focus solves that by:</p>
+      <ul>
+        <li>Rescaling the y-axis corresponds to the chosen line</li>
+        <li>Making trends visually meaningful</li>
+        <li>Keeping other lines for context but dimmed</li>
+      </ul>
+
+      <hr class="section-divider" />
+
+      
+      <h2>FINDINGS AND INSIGHTS</h2>
+
+      <h3>Covid-19 impact</h3>
+
+      <p>When I zoomed in around 2020, I noticed that the COVID-19 period affected Medicaid enrollment, but not in all states.</p>
+
+      <p>States that show a clear increase during COVID-19, like Indiana and New York.</p>
+      <p>These two states show a strong rise in Medicaid enrollment during COVID-19. This matches what happened nationally. Many people were enrolled because of emergency rules, and more people qualified due to job loss.</p>
+
+      <div class="image-placeholder">
+        <img src="images/IN_Enrollment_Total.png" alt="Indiana total enrollment">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/IN_Enrollment_Groups.png" alt="Indiana groups enrollment">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/NY_Enrollment_Total.png" alt="New York total enrollment">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/NY_Enrollment_Groups.png" alt="New York groups enrollment">
+      </div>
+
+      <p>A state with a different pattern, like California.</p>
+      <p>California did not have a clear jump, its enrollment moved in a U-shape, down in 2019, bottoms out early in 2020, and goes up again in late 2020 and 2021. This shows that each state reacted differently during the pandemic. Some states changed quickly, while others changed slowly or were affected by other factors.</p>
+
+      <div class="image-placeholder">
+        <img src="images/CA_Enrollment_Total.png" alt="California total enrollment">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/CA_Enrollment_Groups.png" alt="California groups enrollment">
+      </div>
+
+      <h3>VIII Group and Newly Eligible VIII often move together</h3>
+
+      <p>In most states, when I zoom in, I see that VIII Group enrollees and Newly Eligible VIII enrollees have similar shapes over time.</p>
+      <p>This means most people in the VIII Group are actually newly eligible adults.</p>
+      <p>The similarity tells us that the expansion is still the main reason these adults join Medicaid.</p>
+
+      <div class="image-placeholder">
+        <img src="images/NV_Same_Trend_1.jpeg" alt="Nevada same trend example 1">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/NV_Same_Trend_2.jpeg" alt="Nevada same trend example 2">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/PA_Same_Trend.jpeg" alt="Pennsylvania same trend example">
+      </div>
+
+      <h3>Different states expanded Medicaid at different times</h3>
+
+      <p>Not every state expanded Medicaid in 2014. Some states show VIII enrollment starting around 2015, 2016, or later (example: Indiana, Louisiana). Some states never get VIII Group data because they never expanded (example: Florida, Texas).</p>
+
+      <div class="image-placeholder">
+        <img src="images/IN_Expanded.jpeg" alt="Indiana expansion timing">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/LA_Expanded.jpeg" alt="Louisiana expansion timing">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/FL_Expanded.jpeg" alt="Florida non-expansion example">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/TX_Expanded.jpeg" alt="Texas non-expansion example">
+      </div>
+
+      <h3>The Expansion Share shows clearer long-term patterns</h3>
+
+      <p>Sometimes, the Enrollment Counts mode is difficult to compare because states have different populations. When switching to Expansion Share, the patterns become easier to compare. Some states stabilize at around 20-35 percent share. Expansion share helps compare states fairly because percentages remove differences in population size.</p>
+
+      <div class="image-placeholder">
+        <img src="images/IA_Share.jpeg" alt="Iowa expansion share">
+      </div>
+
+      <div class="image-placeholder">
+        <img src="images/NV_Share.jpeg" alt="Nevada expansion share">
+      </div>
+
+      <!-- Demo video -->
+      <div class="video-section">
+        <h2>Demo Video</h2>
+        <p>
+          The following screen-capture video walks through the interactive visualization,
+          including state selection, zooming, and the expansion share mode.
+        </p>
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/id"
+            title="Medicaid Enrollment Trends – Demo Video"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medicaid Enrollment Trends (2014–2021)</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Helper scripts -->
+  <script src="utils.js"></script>
+  <script src="legend.js"></script>
+  <script src="zoom.js"></script>
+
+  <!-- Chart -->
+  <script src="chart.js" defer></script>
+</head>
+
+<body>
+  <div class="page-wrap">
+    <div class="top-bar">
+      <h1>Medicaid Enrollment Trends (2014–2021)</h1>
+      <div class="nav-links">
+        <a href="doc.html">Documentation</a>
+      </div>
+    </div>
+
+    <div id="controls">
+      <div>
+        <label for="state-select">State:</label>
+        <select id="state-select"></select>
+      </div>
+
+      <div id="mode-controls">
+        <label>
+          <input type="radio" name="mode" value="counts" checked />
+          Enrollment counts
+        </label>
+        <label>
+          <input type="radio" name="mode" value="share" />
+          Expansion share (%)
+        </label>
+      </div>
+
+      <div class="zoom-controls">
+        <button id="zoom-in">Zoom in</button>
+        <button id="zoom-out">Zoom out</button>
+        <button id="zoom-reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="chart-title" id="chart-title">
+      Enrollment counts for selected state
+    </div>
+    <svg id="chart" width="900" height="420"></svg>
+
+    <div class="hint">
+      Use Zoom in / Zoom out / Reset to adjust the time range.
+      Drag left or right inside the chart to move the time window.
+      Click legend items to focus on one line; click again to go back.
+    </div>
+
+    <div id="tooltip" class="tooltip" style="opacity: 0;"></div>
+  </div>
+</body>
+</html>
+
